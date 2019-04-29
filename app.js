@@ -4,8 +4,7 @@ import dotenv from 'dotenv';
 import users from './server/routes/api/users';
 import profile from './server/routes/api/profile.js';
 import posts from './server/routes/api/posts';
-
-
+ 
 const app = express();
 
 // Use the router and dotenv
