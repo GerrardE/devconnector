@@ -1,4 +1,5 @@
 import express from 'express';
+import posts from '../../controllers/posts'
 
 const router = express.Router();
 
@@ -6,10 +7,10 @@ const router = express.Router();
 // @desc   Tests posts route
 // @access Public
 router.get('/test', (req, res) => {
-  res.json
-  .send({
+  res.json({
     message: 'Success: Posts working'
   })
 })
 
+router.post('/register', )
 export default router;
