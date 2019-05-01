@@ -2,6 +2,8 @@ import User from '../models/User';
 import gravatar from 'gravatar';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import validRegistration from '../middlewares/register';
+import validLogin from '../middlewares/login';
 
 class UserController {
   // @route  GET api/users/test
@@ -17,15 +19,23 @@ class UserController {
   // @desc   Registers a user
   // @access Public
   static register (req, res) {
+    const { errors, isValid } = validRegistration(req.body);
+
+    // Check Validation
+    if (!isValid) {
+      return res.status(400).json(errors)
+    }
+
     User.findOne({ 
       email: req.body.email
     })
     .then((user) => {
       if (user) {
+        errors.message = 'Email already exists, Try a new one.';
         return res.status(400)
         .json({
           success: false,
-          message: 'Email already exists, Try a new one.'
+          errors
         })
       } else {
         const avatar = gravatar.url(req.body.email, {
@@ -54,10 +64,11 @@ class UserController {
               })
             })
             .catch((err) => {
+              errors.message = err
               return res.status(400)
               .json({
                 success: false,
-                message: err
+                errors
               })
             })
           })
@@ -70,6 +81,13 @@ class UserController {
   // @desc   Logs in a user/ Return JWT
   // @access Public
   static login (req, res) {
+    const { errors, isValid } = validLogin(req.body);
+
+    // Check Validation
+    if (!isValid) {
+      return res.status(400).json(errors)
+    }
+
     const {email, password} = req.body;
 
     // Find user by email
@@ -77,10 +95,11 @@ class UserController {
     .then((user) => {
       // Check if user exists
       if (!user) {
+        errors.message = 'Authentication failed: User not found.';
         return res.status(404)
           .json({
             success: false,
-            message: 'Authentication failed: User not found.'
+            errors
           })
       }
 
@@ -106,21 +125,37 @@ class UserController {
                     token: `Bearer ${token}`
                   })
               }
+              errors.message = err;
               return res.status(400)
                 .json({
                   success: false,
-                  message: err
+                  errors
                 })
             })
           } else {
+            errors.message = 'Authentication failed';
             return res.status(400)
               .json({
                 success: false,
-                message: 'Authentication failed'
+                errors 
             })
           }
         })
     })
+  }
+
+  // @route  GET api/users/current
+  // @desc   Returns the current user
+  // @access Private
+  static current (req, res) {
+    const { id, name, email } = req.user;
+    return res.json({
+        success: true,
+        message: 'Route accessed successfully.',
+        user: {
+          id, name, email
+        }
+      });
   }
 }
 

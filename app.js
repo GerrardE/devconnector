@@ -1,13 +1,17 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import morgan from 'morgan';
+import passport from 'passport';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
+import strategy from './server/helpers/passport';
 import users from './server/routes/api/users';
 import profile from './server/routes/api/profile.js';
 import posts from './server/routes/api/posts';
  
 const app = express();
 dotenv.config();
+app.use(morgan('tiny'));
 
 // DB config
 const db = process.env.DATABASE;
@@ -17,6 +21,10 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.log(err))
   
+// Passport middleware
+app.use(passport.initialize());
+strategy(passport);
+
 // Configure body parser
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json());  
