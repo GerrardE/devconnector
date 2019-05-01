@@ -1,6 +1,7 @@
 import User from '../models/User';
 import gravatar from 'gravatar';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 class UserController {
   // @route  GET api/users/test
@@ -70,7 +71,7 @@ class UserController {
   // @access Public
   static login (req, res) {
     const {email, password} = req.body;
-    
+
     // Find user by email
     User.findOne({email})
     .then((user) => {
@@ -87,11 +88,30 @@ class UserController {
       bcrypt.compare(password, user.password)
         .then((isMatch) => {
           if (isMatch) {
-            return res.status(200)
-              .json({
-                success: true,
-                message: 'Authentication successful. User logged in.'
-              })
+            // Create the payload
+            const payload = {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              avatar: user.avatar
+            }
+
+            // Sign the token
+            jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: 360000}, (err, token) => {
+              if (token) {
+                return res.status(200)
+                  .json({
+                    success: true,
+                    message: 'Authentication successful. User logged in.',
+                    token: `Bearer ${token}`
+                  })
+              }
+              return res.status(400)
+                .json({
+                  success: false,
+                  message: err
+                })
+            })
           } else {
             return res.status(400)
               .json({
