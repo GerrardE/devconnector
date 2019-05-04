@@ -1,4 +1,5 @@
 import Profile from '../models/Profile';
+import User from '../models/User';
 import validProfile from '../middlewares/profile';
 import validExperience from '../middlewares/experience';
 import validEducation from '../middlewares/education';
@@ -345,6 +346,130 @@ class ProfileController {
         })
       })
   }
+
+  // @route  DELETE api/profile/experience/:exp_id
+  // @desc   Delete experience from profile
+  // @access Private
+  static deleteExperience (req, res) {
+    const errors = {};
+
+    Profile.findOne({user: req.user.id})
+      .then(profile => {
+        // Get remove index
+        const removeIndex = profile.experience
+          .map(item => item.id)
+            .indexOf(req.params.exp_id)
+
+        // Splice outtah array
+        profile.experience.splice(removeIndex, 1);
+        // Save profile
+        profile.save()
+          .then(profile => {
+            return res.status(200)
+            .json({
+              success: true,
+              message: 'Experience deleted successfully.',
+              profile
+            })
+          })
+          .catch(err => {
+            errors.notDeleted = 'Experience could not be deleted.';
+            return res.status(400)
+            .json({
+              success: false,
+              errors
+            })
+          })
+      })
+      .catch(err => {
+        errors.noprofile = 'This profile does not exist.'
+        return res.status(404)
+        .json({
+          success: false,
+          errors
+        })
+      })
+  }
+
+  // @route  DELETE api/profile/education/:edu_id
+  // @desc   Delete education from profile
+  // @access Private
+  static deleteEducation (req, res) {
+    const errors = {};
+
+    Profile.findOne({user: req.user.id})
+      .then(profile => {
+        // Get remove index
+        const removeIndex = profile.education
+          .map(item => item.id)
+            .indexOf(req.params.edu_id)
+
+        // Splice outtah array
+        profile.education.splice(removeIndex, 1);
+        // Save profile
+        profile.save()
+          .then(profile => {
+            return res.status(200)
+            .json({
+              success: true,
+              message: 'Education deleted successfully.',
+              profile
+            })
+          })
+          .catch(err => {
+            errors.notDeleted = 'Education could not be deleted.';
+            return res.status(400)
+            .json({
+              success: false,
+              errors
+            })
+          })
+      })
+      .catch(err => {
+        errors.noprofile = 'This profile does not exist.'
+        return res.status(404)
+        .json({
+          success: false,
+          errors
+        })
+      })
+  }
+
+  // @route  DELETE api/profile
+  // @desc   Delete user and profile
+  // @access Private
+  static deleteUser (req, res) {
+    const errors = {};
+
+    Profile.findOneAndRemove({user: req.user.id})
+      .then(()=> {
+        User.findOneAndRemove({_id: req.user.id})
+          .then(() => {
+            return res.status(200)
+              .json({
+                success: true,
+                message: 'User and corresponding profile deleted successfully.'
+              })
+            })
+            .catch(err => {
+              errors.noprofile = 'This user does not exist.'
+              return res.status(404)
+              .json({
+                success: false,
+                errors
+              })
+            })
+        })
+      .catch(err => {
+        errors.noprofile = 'This profile does not exist.'
+        return res.status(404)
+        .json({
+          success: false,
+          errors
+        })
+      })
+  }
 }
+
 
 export default ProfileController;
