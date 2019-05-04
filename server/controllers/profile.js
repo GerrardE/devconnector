@@ -1,5 +1,7 @@
 import Profile from '../models/Profile';
 import validProfile from '../middlewares/profile';
+import validExperience from '../middlewares/experience';
+import validEducation from '../middlewares/education';
 
 class ProfileController {
   // @route  GET api/profile/test
@@ -225,6 +227,122 @@ class ProfileController {
             success: false,
             errors 
           })
+      })
+  }
+
+  // @route  POST api/profile/experience
+  // @desc   Add experience to profile
+  // @access Private
+  static addExperience (req, res) {
+    const { errors, isValid } = validExperience(req.body);
+
+    // Check validation
+    if (!isValid) {
+      // return any error with 400 status
+      return res.status(400)
+        .json({
+          success: false,
+          errors
+        })
+    }
+
+    Profile.findOne({user: req.user.id})
+      .then(profile => {
+        const newExp = {
+          title: req.body.title,
+          company: req.body.company,
+          location: req.body.location,
+          from: req.body.from,
+          to: req.body.to,
+          current: req.body.current,
+          description: req.body.description
+        }
+
+        // Add to Experience array
+        profile.experience.unshift(newExp);
+        profile.save()
+          .then(profile => {
+            return res.status(200)
+              .json({
+                success: true,
+                message: 'Experience added successfully',
+                profile
+              })
+          })
+          .catch(err => {
+            errors.notSaved = 'This experience was not saved'
+            return res.status(400)
+              .json({
+                success: false,
+                errors
+              })
+          })
+      })
+      .catch(err => {
+        errors.noprofile = 'This profile does not exist'
+        return res.status(404)
+        .json({
+          success: false,
+          errors
+        })
+      })
+  }
+
+  // @route  POST api/profile/education
+  // @desc   Add education to profile
+  // @access Private
+  static addEducation (req, res) {
+    const { errors, isValid } = validEducation(req.body);
+
+    // Check validation
+    if (!isValid) {
+      // return any error with 400 status
+      return res.status(400)
+        .json({
+          success: false,
+          errors
+        })
+    }
+
+    Profile.findOne({user: req.user.id})
+      .then(profile => {
+        const newEdu = {
+          school: req.body.school,
+          degree: req.body.degree,
+          fieldofstudy: req.body.fieldofstudy,
+          from: req.body.from,
+          to: req.body.to,
+          current: req.body.current,
+          description: req.body.description
+        }
+
+        // Add to Top of Education array
+        profile.education.unshift(newEdu);
+        profile.save()
+          .then(profile => {
+            return res.status(200)
+              .json({
+                success: true,
+                message: 'Education added successfully',
+                profile
+              })
+          })
+          .catch(err => {
+            errors.notSaved = 'This education was not saved'
+            return res.status(400)
+              .json({
+                success: false,
+                errors
+              })
+          })
+      })
+      .catch(err => {
+        errors.noprofile = 'This profile does not exist'
+        return res.status(404)
+        .json({
+          success: false,
+          errors
+        })
       })
   }
 }
