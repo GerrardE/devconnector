@@ -10,5 +10,7 @@ router.post('/', authenticate, profile.createUser)
 router.get('/handle/:handle', profile.getProfileByHandle)
 router.get('/user/:user_id', profile.getProfileById)
 router.get('/all', profile.getAllProfiles)
+router.post('/experience', authenticate, profile.addExperience)
+router.post('/education', authenticate, profile.addEducation)
 
 export default router;
