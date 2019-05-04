@@ -1,5 +1,4 @@
 import Profile from '../models/Profile';
-import User from '../models/User';
 import validProfile from '../middlewares/profile';
 
 class ProfileController {
@@ -128,6 +127,106 @@ class ProfileController {
 
     
   } 
+
+  // @route  GET api/profile/handle/:handle
+  // @desc   Get current user's profile by handle
+  // @access Public
+  static getProfileByHandle (req, res) {
+    const errors = {};
+
+    Profile.findOne({handle: req.params.handle})
+    .populate('user', ['name', 'avatar'])
+      .then(profile => {
+        if(!profile) {
+          errors.noprofile = 'There is no profile for this user'
+          return res.status(404)
+          .json({
+            success: false,
+            errors
+          })
+        }
+        return res.status(200)
+          .json({
+            success: true,
+            message: 'Profile retrieved successfully',
+            profile
+          })
+      })
+      .catch(err => {
+        return res.status(404)
+          .json({
+            success: false,
+            err
+          })
+      })
+  } 
+
+  // @route  GET api/profile/user/:user_id
+  // @desc   Get current user's profile by user id
+  // @access Public
+  static getProfileById (req, res) {
+    const errors = {};
+
+    Profile.findOne({user: req.params.user_id})
+    .populate('user', ['name', 'avatar'])
+      .then(profile => {
+        if(!profile) {
+          errors.noprofile = 'There is no profile for this user'
+          return res.status(404)
+          .json({
+            success: false,
+            errors
+          })
+        }
+        return res.status(200)
+          .json({
+            success: true,
+            message: 'Profile retrieved successfully',
+            profile
+          })
+      })
+      .catch(err => {
+        errors.noprofile = 'There is no profile for this user'
+        return res.status(404)
+          .json({
+            success: false,
+            errors 
+          })
+      })
+  } 
+
+  // @route  GET api/profile/all
+  // @desc   Get all profiles
+  // @access Public
+  static getAllProfiles (req, res) {
+    const errors = {};
+
+    Profile.find()
+    .populate('user', ['name', 'avatar'])
+      .then(profiles => {
+        if(!profiles) {
+          errors.noprofile = 'There are no profiles'
+          return res.status(404)
+          .json({
+            success: false,
+            errors
+          })
+        }
+        return res.status(200)
+          .json({
+            success: true,
+            message: 'Profiles retrieved successfully',
+            profiles
+          })
+      })
+      .catch(err => {
+        return res.status(404)
+          .json({
+            success: false,
+            errors 
+          })
+      })
+  }
 }
 
 export default ProfileController;
