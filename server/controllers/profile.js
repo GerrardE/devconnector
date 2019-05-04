@@ -1,5 +1,6 @@
 import Profile from '../models/Profile';
 import User from '../models/User';
+import validProfile from '../middlewares/profile';
 
 class ProfileController {
   // @route  GET api/profile/test
@@ -15,10 +16,11 @@ class ProfileController {
   // @desc   Get current user's profile
   // @access Private
   static getUser (req, res) {
-    const { id } = req.body;
+    const id = req.user.id;
     const errors = {};
 
     Profile.findOne({user: id})
+    .populate('user', ['name', 'avatar'])
       .then(profile => {
         if (!profile) {
           errors.noprofile = 'There is no profile for this user';
@@ -28,6 +30,11 @@ class ProfileController {
               errors
             });
         }
+        return res.status(200)
+          .json({
+            success: true,
+            profile
+          });
       })
       .catch(err => {
         return res.status(404)
@@ -42,10 +49,19 @@ class ProfileController {
   // @desc   Create/Update user profile
   // @access Private
   static createUser (req, res) {
-    const { profileFields } = {};
+    const profileFields = {};
     profileFields.user = req.user.id;
-    const errors = {};
-
+    const { errors, isValid } = validProfile(req.body);
+    
+    // Check validation
+    if (!isValid) {
+      // return any error with 400 status
+      return res.status(400)
+        .json({
+          success: false,
+          errors
+        })
+    }
     
     if (req.body.handle) profileFields.handle = req.body.handle;
     if (req.body.company) profileFields.company = req.body.company;
@@ -69,6 +85,7 @@ class ProfileController {
     if (req.body.instagram) profileFields.social.instagram = req.body.instagram;
 
     Profile.findOne({user: req.user.id})
+      .populate('user', ['name', 'avatar'])
       .then(profile => {
         if(profile) {
           // Update
