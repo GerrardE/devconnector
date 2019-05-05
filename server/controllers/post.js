@@ -153,6 +153,128 @@ class PostController {
           })
       })
   }
+
+  // @route  POST api/posts/like/:id
+  // @desc   Likes a post
+  // @access Private
+  static likePost (req, res) {
+    const errors = {};
+
+    Profile.findOne({user: req.user.id})
+      .then(profile => {
+        Post.findById(req.params.id)
+          .then(post => {
+            if (post.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
+              errors.alreadyliked = 'User already liked this post';
+              return res.status(400)
+                .json({
+                  success: false,
+                  errors
+                })
+            }
+
+            // Add use id to likes array
+            post.likes.unshift({user: req.user.id});
+            post.save().then(post => {
+              return res.status(200)
+                .json({
+                  success: true,
+                  message: 'Post liked',
+                  post
+                })
+            })
+            .catch(err => {
+              errors.notliked = 'Post not liked'
+              return res.status(400)
+                .json({
+                  success: false,
+                  errors
+                })
+            })
+          })
+          .catch(err => {
+            errors.nopost = 'There is no post with this ID.';
+              return res.status(404)
+                .json({
+                  success: false,
+                  errors
+                })
+          })
+      })
+      .catch(err => {
+        errors.noprofile = 'This profile does not exist.';
+        return res.status(404)
+          .json({
+            success: false,
+            errors
+          })
+      })
+  }
+
+  // @route  POST api/posts/unlike/:id
+  // @desc   Unlikes a post-like
+  // @access Private
+  static unlikePost (req, res) {
+    const errors = {};
+
+    Profile.findOne({user: req.user.id})
+      .then(profile => {
+        Post.findById(req.params.id)
+          .then(post => {
+            if (post.likes.filter(like => like.user.toString() === req.user.id).length === 0) {
+              errors.notliked = 'You have not yet liked this post';
+              return res.status(400)
+                .json({
+                  success: false,
+                  errors
+                })
+            }
+
+            // Get the removeIndex
+            const removeIndex = post.likes
+              .map(item => item.user.toString())
+                .indexOf(req.user.id);
+
+            // splice outtah the array
+            post.likes.splice(removeIndex, 1);
+
+            // Save
+            post.save()
+              .then(post => {
+                return res.status(200)
+                .json({
+                  success: true,
+                  message: 'Post unliked',
+                  post
+                })
+              })
+            .catch(err => {
+              errors.notliked = 'Post not unliked'
+              return res.status(400)
+                .json({
+                  success: false,
+                  errors
+                })
+            })
+          })
+          .catch(err => {
+            errors.nopost = 'There is no post with this ID.';
+              return res.status(404)
+                .json({
+                  success: false,
+                  errors
+                })
+          })
+      })
+      .catch(err => {
+        errors.noprofile = 'This profile does not exist.';
+        return res.status(404)
+          .json({
+            success: false,
+            errors
+          })
+      })
+  }
 }
 
 export default PostController;
