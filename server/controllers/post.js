@@ -1,6 +1,7 @@
 import Profile from '../models/Profile';
 import Post from '../models/Post';
 import validPost from '../middlewares/post';
+import validComment from '../middlewares/comment';
 
 class PostController {
   // @route  GET api/posts/test
@@ -273,6 +274,116 @@ class PostController {
             success: false,
             errors
           })
+      })
+  }
+
+  // @route  POST api/posts/comment/:id
+  // @desc   Comments on a post
+  // @access Private
+  static comment (req, res) {
+    const { errors, isValid } = validComment(req.body);
+
+    // Check validation
+    if(!isValid) {
+      // If any errors, send 400 with errors object
+      return res.status(400)
+        .json({
+          success: false,
+          errors
+        })
+    }
+
+    Post.findById(req.params.id)
+      .then(post => {
+        const newComment = {
+          text: req.body.text,
+          name: req.body.name,
+          avatar: req.body.avatar,
+          user: req.user.id
+        }
+
+        // Add to comments array
+        post.comments.unshift(newComment);
+        // Save
+        post.save()
+          .then(post => {
+            return res.status(200)
+              .json({
+                success: true,
+                message: 'Comment added successfully.',
+                post
+              })
+          })
+          .catch(err => {
+            errors.nocomment = 'Comment not added.';
+            return res.status(400)
+              .json({
+                success: false,
+                errors
+              })        
+          })
+      })
+      .catch(err => {
+        errors.nopost = 'There is no post with this ID.';
+        return res.status(404)
+          .json({
+            success: false,
+            errors
+          })        
+      })
+  }
+
+  // @route  DELETE api/posts/comment/:id/:comment_id
+  // @desc   Deletes a comment from a post
+  // @access Private
+  static uncomment (req, res) {
+    const errors = {};
+
+    Post.findById(req.params.id)
+      .then(post => {
+        // Check if comment exists
+        if(post.comments.filter(comment => comment._id.toString() === req.params.comment_id).length === 0) {
+          errors.nocomment = 'There is no comment with this ID.';
+        return res.status(404)
+          .json({
+            success: false,
+            errors
+          })   
+        }
+        // Get the removeIndex
+        const removeIndex = post.comments
+        .map(item => item._id.toString())
+          .indexOf(req.params.comment_id);
+
+        // splice outtah the array
+        post.comments.splice(removeIndex, 1);
+
+        // Save
+        post.save()
+          .then(post => {
+            return res.status(200)
+              .json({
+                success: true,
+                message: 'Comment removed successfully.',
+                post
+              })
+          })
+          .catch(err => {
+            errors.nocomment = 'Comment not removed.';
+            return res.status(400)
+              .json({
+                success: false,
+                errors
+              })        
+          })
+      })
+      .catch(err => {
+        errors.nopost = 'There is no post with this ID.';
+        return res.status(404)
+          .json({
+            success: false,
+            errors
+          })        
       })
   }
 }
