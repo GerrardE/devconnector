@@ -1,16 +1,9 @@
 import express from 'express';
-import posts from '../../controllers/posts'
+import post from '../../controllers/post';
+import authenticate from '../../middlewares/passport';
 
 const router = express.Router();
 
-// @route  GET api/posts/test
-// @desc   Tests posts route
-// @access Public
-router.get('/test', (req, res) => {
-  res.json({
-    message: 'Success: Posts working'
-  })
-})
+router.post('/', authenticate, post.createPost);
 
-router.post('/register', )
 export default router;
