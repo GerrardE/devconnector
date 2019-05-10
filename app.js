@@ -34,7 +34,7 @@ app.use('/api/users', users);
 app.use('/api/profile', profile);
 app.use('/api/posts', posts);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 // Listen on the port
 app.listen(port, () => {
   console.log(`Server started at port ${port}`)

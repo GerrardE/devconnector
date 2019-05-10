@@ -8,21 +8,21 @@ class ProfileController {
   // @route  GET api/profile/test
   // @desc   Tests profile route
   // @access Public
-  static test (req, res) {
-      res.json({
-        message: 'Success: Profile working'
-    })
+  static test(req, res) {
+    res.json({
+      message: 'Success: Profile working'
+    });
   }
 
   // @route  GET api/profile
   // @desc   Get current user's profile
   // @access Private
-  static getUser (req, res) {
+  static getUser(req, res) {
     const id = req.user.id;
     const errors = {};
 
     Profile.findOne({user: id})
-    .populate('user', ['name', 'avatar'])
+      .populate('user', ['name', 'avatar'])
       .then(profile => {
         if (!profile) {
           errors.noprofile = 'There is no profile for this user';
@@ -44,13 +44,13 @@ class ProfileController {
             success: false,
             err
           });
-      })
+      });
   }
 
   // @route  POST api/profile
   // @desc   Create/Update user profile
   // @access Private
-  static createUser (req, res) {
+  static createUser(req, res) {
     const profileFields = {};
     profileFields.user = req.user.id;
     const { errors, isValid } = validProfile(req.body);
@@ -62,7 +62,7 @@ class ProfileController {
         .json({
           success: false,
           errors
-        })
+        });
     }
     
     if (req.body.handle) profileFields.handle = req.body.handle;
@@ -98,7 +98,7 @@ class ProfileController {
                   success: true,
                   message: 'Profile updated successfully',
                   profile
-                })
+                });
             });
         } else {
           // Create
@@ -111,22 +111,22 @@ class ProfileController {
                   .json({
                     success: false,
                     errors
-                  })
+                  });
               }
 
               // Save Profile
               new Profile(profileFields).save()
                 .then(profile => {
                   return res.status(200)
-                  .json({
-                    success: true,
-                    message: 'Profile created successfully',
-                    profile
-                  })
-                })
-            })
+                    .json({
+                      success: true,
+                      message: 'Profile created successfully',
+                      profile
+                    });
+                });
+            });
         }
-      })
+      });
 
     
   } 
@@ -134,107 +134,107 @@ class ProfileController {
   // @route  GET api/profile/handle/:handle
   // @desc   Get current user's profile by handle
   // @access Public
-  static getProfileByHandle (req, res) {
+  static getProfileByHandle(req, res) {
     const errors = {};
 
     Profile.findOne({handle: req.params.handle})
-    .populate('user', ['name', 'avatar'])
+      .populate('user', ['name', 'avatar'])
       .then(profile => {
         if(!profile) {
-          errors.noprofile = 'There is no profile for this user'
+          errors.noprofile = 'There is no profile for this user';
           return res.status(404)
-          .json({
-            success: false,
-            errors
-          })
+            .json({
+              success: false,
+              errors
+            });
         }
         return res.status(200)
           .json({
             success: true,
             message: 'Profile retrieved successfully',
             profile
-          })
+          });
       })
       .catch(err => {
         return res.status(404)
           .json({
             success: false,
             err
-          })
-      })
+          });
+      });
   } 
 
   // @route  GET api/profile/user/:user_id
   // @desc   Get current user's profile by user id
   // @access Public
-  static getProfileById (req, res) {
+  static getProfileById(req, res) {
     const errors = {};
 
     Profile.findOne({user: req.params.user_id})
-    .populate('user', ['name', 'avatar'])
+      .populate('user', ['name', 'avatar'])
       .then(profile => {
         if(!profile) {
-          errors.noprofile = 'There is no profile for this user'
+          errors.noprofile = 'There is no profile for this user';
           return res.status(404)
-          .json({
-            success: false,
-            errors
-          })
+            .json({
+              success: false,
+              errors
+            });
         }
         return res.status(200)
           .json({
             success: true,
             message: 'Profile retrieved successfully',
             profile
-          })
+          });
       })
       .catch(err => {
-        errors.noprofile = 'There is no profile for this user'
+        errors.noprofile = 'There is no profile for this user';
         return res.status(404)
           .json({
             success: false,
             errors 
-          })
-      })
+          });
+      });
   } 
 
   // @route  GET api/profile/all
   // @desc   Get all profiles
   // @access Public
-  static getAllProfiles (req, res) {
+  static getAllProfiles(req, res) {
     const errors = {};
 
     Profile.find()
-    .populate('user', ['name', 'avatar'])
+      .populate('user', ['name', 'avatar'])
       .then(profiles => {
         if(!profiles) {
-          errors.noprofile = 'There are no profiles'
+          errors.noprofile = 'There are no profiles';
           return res.status(404)
-          .json({
-            success: false,
-            errors
-          })
+            .json({
+              success: false,
+              errors
+            });
         }
         return res.status(200)
           .json({
             success: true,
             message: 'Profiles retrieved successfully',
             profiles
-          })
+          });
       })
       .catch(err => {
         return res.status(404)
           .json({
             success: false,
             errors 
-          })
-      })
+          });
+      });
   }
 
   // @route  POST api/profile/experience
   // @desc   Add experience to profile
   // @access Private
-  static addExperience (req, res) {
+  static addExperience(req, res) {
     const { errors, isValid } = validExperience(req.body);
 
     // Check validation
@@ -244,7 +244,7 @@ class ProfileController {
         .json({
           success: false,
           errors
-        })
+        });
     }
 
     Profile.findOne({user: req.user.id})
@@ -257,7 +257,7 @@ class ProfileController {
           to: req.body.to,
           current: req.body.current,
           description: req.body.description
-        }
+        };
 
         // Add to Experience array
         profile.experience.unshift(newExp);
@@ -268,31 +268,31 @@ class ProfileController {
                 success: true,
                 message: 'Experience added successfully',
                 profile
-              })
+              });
           })
           .catch(err => {
-            errors.notSaved = 'This experience was not saved'
+            errors.notSaved = 'This experience was not saved';
             return res.status(400)
               .json({
                 success: false,
                 errors
-              })
-          })
+              });
+          });
       })
       .catch(err => {
-        errors.noprofile = 'This profile does not exist'
+        errors.noprofile = 'This profile does not exist';
         return res.status(404)
-        .json({
-          success: false,
-          errors
-        })
-      })
+          .json({
+            success: false,
+            errors
+          });
+      });
   }
 
   // @route  POST api/profile/education
   // @desc   Add education to profile
   // @access Private
-  static addEducation (req, res) {
+  static addEducation(req, res) {
     const { errors, isValid } = validEducation(req.body);
 
     // Check validation
@@ -302,7 +302,7 @@ class ProfileController {
         .json({
           success: false,
           errors
-        })
+        });
     }
 
     Profile.findOne({user: req.user.id})
@@ -315,7 +315,7 @@ class ProfileController {
           to: req.body.to,
           current: req.body.current,
           description: req.body.description
-        }
+        };
 
         // Add to Top of Education array
         profile.education.unshift(newEdu);
@@ -326,31 +326,31 @@ class ProfileController {
                 success: true,
                 message: 'Education added successfully',
                 profile
-              })
+              });
           })
           .catch(err => {
-            errors.notSaved = 'This education was not saved'
+            errors.notSaved = 'This education was not saved';
             return res.status(400)
               .json({
                 success: false,
                 errors
-              })
-          })
+              });
+          });
       })
       .catch(err => {
-        errors.noprofile = 'This profile does not exist'
+        errors.noprofile = 'This profile does not exist';
         return res.status(404)
-        .json({
-          success: false,
-          errors
-        })
-      })
+          .json({
+            success: false,
+            errors
+          });
+      });
   }
 
   // @route  DELETE api/profile/experience/:exp_id
   // @desc   Delete experience from profile
   // @access Private
-  static deleteExperience (req, res) {
+  static deleteExperience(req, res) {
     const errors = {};
 
     Profile.findOne({user: req.user.id})
@@ -358,7 +358,7 @@ class ProfileController {
         // Get remove index
         const removeIndex = profile.experience
           .map(item => item.id)
-            .indexOf(req.params.exp_id)
+          .indexOf(req.params.exp_id);
 
         // Splice outtah array
         profile.experience.splice(removeIndex, 1);
@@ -366,35 +366,35 @@ class ProfileController {
         profile.save()
           .then(profile => {
             return res.status(200)
-            .json({
-              success: true,
-              message: 'Experience deleted successfully.',
-              profile
-            })
+              .json({
+                success: true,
+                message: 'Experience deleted successfully.',
+                profile
+              });
           })
           .catch(err => {
             errors.notDeleted = 'Experience could not be deleted.';
             return res.status(400)
-            .json({
-              success: false,
-              errors
-            })
-          })
+              .json({
+                success: false,
+                errors
+              });
+          });
       })
       .catch(err => {
-        errors.noprofile = 'This profile does not exist.'
+        errors.noprofile = 'This profile does not exist.';
         return res.status(404)
-        .json({
-          success: false,
-          errors
-        })
-      })
+          .json({
+            success: false,
+            errors
+          });
+      });
   }
 
   // @route  DELETE api/profile/education/:edu_id
   // @desc   Delete education from profile
   // @access Private
-  static deleteEducation (req, res) {
+  static deleteEducation(req, res) {
     const errors = {};
 
     Profile.findOne({user: req.user.id})
@@ -402,7 +402,7 @@ class ProfileController {
         // Get remove index
         const removeIndex = profile.education
           .map(item => item.id)
-            .indexOf(req.params.edu_id)
+          .indexOf(req.params.edu_id);
 
         // Splice outtah array
         profile.education.splice(removeIndex, 1);
@@ -410,35 +410,35 @@ class ProfileController {
         profile.save()
           .then(profile => {
             return res.status(200)
-            .json({
-              success: true,
-              message: 'Education deleted successfully.',
-              profile
-            })
+              .json({
+                success: true,
+                message: 'Education deleted successfully.',
+                profile
+              });
           })
           .catch(err => {
             errors.notDeleted = 'Education could not be deleted.';
             return res.status(400)
-            .json({
-              success: false,
-              errors
-            })
-          })
+              .json({
+                success: false,
+                errors
+              });
+          });
       })
       .catch(err => {
-        errors.noprofile = 'This profile does not exist.'
+        errors.noprofile = 'This profile does not exist.';
         return res.status(404)
-        .json({
-          success: false,
-          errors
-        })
-      })
+          .json({
+            success: false,
+            errors
+          });
+      });
   }
 
   // @route  DELETE api/profile
   // @desc   Delete user and profile
   // @access Private
-  static deleteUser (req, res) {
+  static deleteUser(req, res) {
     const errors = {};
 
     Profile.findOneAndRemove({user: req.user.id})
@@ -449,25 +449,25 @@ class ProfileController {
               .json({
                 success: true,
                 message: 'User and corresponding profile deleted successfully.'
-              })
-            })
-            .catch(err => {
-              errors.noprofile = 'This user does not exist.'
-              return res.status(404)
+              });
+          })
+          .catch(err => {
+            errors.noprofile = 'This user does not exist.';
+            return res.status(404)
               .json({
                 success: false,
                 errors
-              })
-            })
-        })
-      .catch(err => {
-        errors.noprofile = 'This profile does not exist.'
-        return res.status(404)
-        .json({
-          success: false,
-          errors
-        })
+              });
+          });
       })
+      .catch(err => {
+        errors.noprofile = 'This profile does not exist.';
+        return res.status(404)
+          .json({
+            success: false,
+            errors
+          });
+      });
   }
 }
 

@@ -5,8 +5,11 @@
   "main": "app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "client-install": "npm install --prefix client",
     "start": "babel-node app.js",
-    "start:dev": "nodemon app.js --exec babel-node"
+    "client": "npm start --prefix client",
+    "start:dev": "nodemon app.js --exec babel-node",
+    "dev": "concurrently \"npm run startdev\" \"npm run client\""
   },
   "keywords": [
     "React",
