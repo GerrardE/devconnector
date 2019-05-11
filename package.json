@@ -9,7 +9,7 @@
     "start": "babel-node app.js",
     "client": "npm start --prefix client",
     "start:dev": "nodemon app.js --exec babel-node",
-    "dev": "concurrently \"npm run startdev\" \"npm run client\""
+    "dev": "./node_modules/.bin/concurrently \"npm run start:dev\" \"npm run client\""
   },
   "keywords": [
     "React",
@@ -28,6 +28,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "concurrently": "^4.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "gravatar": "^1.8.0",
