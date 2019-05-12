@@ -8,7 +8,7 @@ import Landing from './components/layouts/Landing';
 import Login from './components/auth/Login';
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './utils/setAuthToken';
-import { setCurrentUser } from './actions/authActions';
+import { setCurrentUser, logoutUser } from './actions/authActions';
 import Register from './components/auth/Register';
 import './App.css';
 
@@ -21,6 +21,17 @@ if(localStorage.jwtToken) {
 
   // Set current user and isAuthenticated
   store.dispatch(setCurrentUser(decoded));
+
+  // Check for expired token
+  const currentTime = Date.now()/1000;
+  if(decoded.exp < currentTime) {
+    // Logout User
+    store.dispatch(logoutUser());
+    // TODO: Clear current profile
+    
+    // Redirect to Login
+    window.location.href='/login';
+  }
 }
 
 class App extends Component {
