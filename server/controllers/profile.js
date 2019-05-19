@@ -18,12 +18,12 @@ class ProfileController {
   // @desc   Get current user's profile
   // @access Private
   static getUser(req, res) {
-    const id = req.user.id;
+    const { id } = req.user;
     const errors = {};
 
-    Profile.findOne({user: id})
+    Profile.findOne({ user: id })
       .populate('user', ['name', 'avatar'])
-      .then(profile => {
+      .then((profile) => {
         if (!profile) {
           errors.noprofile = 'There is no profile for this user';
           return res.status(404)
@@ -38,7 +38,7 @@ class ProfileController {
             profile
           });
       })
-      .catch(err => {
+      .catch((err) => {
         return res.status(404)
           .json({
             success: false,
@@ -54,7 +54,7 @@ class ProfileController {
     const profileFields = {};
     profileFields.user = req.user.id;
     const { errors, isValid } = validProfile(req.body);
-    
+
     // Check validation
     if (!isValid) {
       // return any error with 400 status
@@ -64,7 +64,7 @@ class ProfileController {
           errors
         });
     }
-    
+
     if (req.body.handle) profileFields.handle = req.body.handle;
     if (req.body.company) profileFields.company = req.body.company;
     if (req.body.website) profileFields.website = req.body.website;
@@ -86,12 +86,12 @@ class ProfileController {
     if (req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
     if (req.body.instagram) profileFields.social.instagram = req.body.instagram;
 
-    Profile.findOne({user: req.user.id})
+    Profile.findOne({ user: req.user.id })
       .populate('user', ['name', 'avatar'])
       .then(profile => {
-        if(profile) {
+        if (profile) {
           // Update
-          Profile.findOneAndUpdate({user: req.user.id}, {$set: profileFields}, {new: true})
+          Profile.findOneAndUpdate({ user: req.user.id }, { $set: profileFields }, { new: true })
             .then(profile => {
               res.status(200)
                 .json({
@@ -103,7 +103,7 @@ class ProfileController {
         } else {
           // Create
           // Check if handle exists
-          Profile.findOne({handle: req.user.id})
+          Profile.findOne({ handle: req.user.id })
             .then(profile => {
               if (profile) {
                 errors.handle = 'That handle already exists';
@@ -128,8 +128,8 @@ class ProfileController {
         }
       });
 
-    
-  } 
+
+  }
 
   // @route  GET api/profile/handle/:handle
   // @desc   Get current user's profile by handle
@@ -137,10 +137,10 @@ class ProfileController {
   static getProfileByHandle(req, res) {
     const errors = {};
 
-    Profile.findOne({handle: req.params.handle})
+    Profile.findOne({ handle: req.params.handle })
       .populate('user', ['name', 'avatar'])
       .then(profile => {
-        if(!profile) {
+        if (!profile) {
           errors.noprofile = 'There is no profile for this user';
           return res.status(404)
             .json({
@@ -162,7 +162,7 @@ class ProfileController {
             err
           });
       });
-  } 
+  }
 
   // @route  GET api/profile/user/:user_id
   // @desc   Get current user's profile by user id
@@ -170,10 +170,10 @@ class ProfileController {
   static getProfileById(req, res) {
     const errors = {};
 
-    Profile.findOne({user: req.params.user_id})
+    Profile.findOne({ user: req.params.user_id })
       .populate('user', ['name', 'avatar'])
       .then(profile => {
-        if(!profile) {
+        if (!profile) {
           errors.noprofile = 'There is no profile for this user';
           return res.status(404)
             .json({
@@ -193,10 +193,10 @@ class ProfileController {
         return res.status(404)
           .json({
             success: false,
-            errors 
+            errors
           });
       });
-  } 
+  }
 
   // @route  GET api/profile/all
   // @desc   Get all profiles
@@ -207,7 +207,7 @@ class ProfileController {
     Profile.find()
       .populate('user', ['name', 'avatar'])
       .then(profiles => {
-        if(!profiles) {
+        if (!profiles) {
           errors.noprofile = 'There are no profiles';
           return res.status(404)
             .json({
@@ -226,7 +226,7 @@ class ProfileController {
         return res.status(404)
           .json({
             success: false,
-            errors 
+            errors
           });
       });
   }
@@ -247,7 +247,7 @@ class ProfileController {
         });
     }
 
-    Profile.findOne({user: req.user.id})
+    Profile.findOne({ user: req.user.id })
       .then(profile => {
         const newExp = {
           title: req.body.title,
@@ -305,7 +305,7 @@ class ProfileController {
         });
     }
 
-    Profile.findOne({user: req.user.id})
+    Profile.findOne({ user: req.user.id })
       .then(profile => {
         const newEdu = {
           school: req.body.school,
@@ -353,7 +353,7 @@ class ProfileController {
   static deleteExperience(req, res) {
     const errors = {};
 
-    Profile.findOne({user: req.user.id})
+    Profile.findOne({ user: req.user.id })
       .then(profile => {
         // Get remove index
         const removeIndex = profile.experience
@@ -397,7 +397,7 @@ class ProfileController {
   static deleteEducation(req, res) {
     const errors = {};
 
-    Profile.findOne({user: req.user.id})
+    Profile.findOne({ user: req.user.id })
       .then(profile => {
         // Get remove index
         const removeIndex = profile.education
@@ -441,9 +441,9 @@ class ProfileController {
   static deleteUser(req, res) {
     const errors = {};
 
-    Profile.findOneAndRemove({user: req.user.id})
-      .then(()=> {
-        User.findOneAndRemove({_id: req.user.id})
+    Profile.findOneAndRemove({ user: req.user.id })
+      .then(() => {
+        User.findOneAndRemove({ _id: req.user.id })
           .then(() => {
             return res.status(200)
               .json({
