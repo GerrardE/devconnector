@@ -12,6 +12,7 @@ import setAuthToken from './utils/setAuthToken';
 import { setCurrentUser, logoutUser } from './actions/authActions';
 import Register from './components/auth/Register';
 import './App.css';
+import { clearCurrentProfile } from './actions/profileActions';
 
 // Check for token
 if(localStorage.jwtToken) {
@@ -29,7 +30,7 @@ if(localStorage.jwtToken) {
     // Logout User
     store.dispatch(logoutUser());
     // TODO: Clear current profile
-    
+    store.dispatch(clearCurrentProfile());
     // Redirect to Login
     window.location.href='/login';
   }
