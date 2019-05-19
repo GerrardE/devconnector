@@ -44,5 +44,6 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.2",
     "nodemon": "^1.18.11"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }
