@@ -43,7 +43,7 @@ class UserController {
             r: 'pg', // Rating
             d: 'mm' // Default
           });
-          const newUser = new User ({
+          const newUser = new User({
             name: req.body.name,
             email: req.body.email,
             avatar,
@@ -93,7 +93,7 @@ class UserController {
     // Find user by email
     User.findOne({ email })
       .then((user) => {
-      // Check if user exists
+        // Check if user exists
         if (!user) {
           errors.email = 'Authentication failed: User not found.';
           return res.status(404)
@@ -107,7 +107,7 @@ class UserController {
         bcrypt.compare(password, user.password)
           .then((isMatch) => {
             if (isMatch) {
-            // Create the payload
+              // Create the payload
               const payload = {
                 id: user.id,
                 name: user.name,

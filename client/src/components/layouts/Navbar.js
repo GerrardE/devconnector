@@ -16,12 +16,12 @@ class Navbar extends Component {
     const authLinks = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-          <a href="" onClick={ this.onLogoutClick.bind(this) } style={{ 
-              width: '25px',
-              marginRight: '5px'
-            }} 
+          <a href="xxx" onClick={this.onLogoutClick.bind(this)} style={{
+            width: '25px',
+            marginRight: '5px'
+          }}
             className="nav-link">
-            <img className="rounded-circle" src={user.avatar} alt={user.name} title="You must have a gravatar connected to your email to display an image"/>{' '}Logout
+            <img className="rounded-circle" src={user.avatar} alt={user.name} title="You must have a gravatar connected to your email to display an image" />{' '}Logout
           </a>
         </li>
       </ul>
@@ -37,7 +37,7 @@ class Navbar extends Component {
         </li>
       </ul>
     )
- 
+
     return (
       <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
         <div className="container">
@@ -54,11 +54,11 @@ class Navbar extends Component {
               </li>
             </ul>
 
-            { isAuthenticated ? authLinks : guestLinks }
+            {isAuthenticated ? authLinks : guestLinks}
           </div>
         </div>
       </nav>
-    ) 
+    )
   }
 }
 
