@@ -23,7 +23,7 @@ class Navbar extends Component {
             marginRight: '5px'
           }}
             className="nav-link">
-            <img className="rounded-circle" src={user.avatar} alt={user.name} title="You must have a gravatar connected to your email to display an image" />{' '}Logout
+            <nobr><img className="rounded-circle" src={user.avatar} alt={user.name} title="You must have a gravatar connected to your email to display an image" />{' '}Logout</nobr> 
           </a>
         </li>
       </ul>
