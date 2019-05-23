@@ -8,6 +8,7 @@ const SelectListGroup = ({ name, placeholder, value, error, info, onChange, opti
       {option.label}
     </option>
   ))
+  
   return (
     <div className="form-group">
 

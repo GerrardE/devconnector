@@ -7,14 +7,14 @@ const InputGroup = ({ name, placeholder, value, error, info, onChange, icon, typ
     <div className="input-group mb-3">
       <div className="input-group-prepend">
         <span className="input-group-text">
-          <i className={icon} />
+          <i className={icon}></i>
         </span>
       </div>
 
-      <input className={classnames('form-control form-control-lg', { 'is-invalid': error })} placeholder={placeholder} name={name} value={value} onChange={onChange} />
+      <input 
+      className={classnames('form-control form-control-lg', { 'is-invalid': error })}  placeholder={placeholder} name={name} value={value} onChange={onChange}></input>
 
-      {error && (<div className="invalid-feedback">{error}</div>
-      )}
+      {error && (<div className="invalid-feedback">{error}</div>)}
     </div>
   )
 }
