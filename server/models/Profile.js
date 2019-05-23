@@ -125,7 +125,7 @@ const ProfileSchema = new Schema({
     },
     twitter: {
       type: String
-    } 
+    }
   },
   date: {
     type: Date,
