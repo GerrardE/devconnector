@@ -41,12 +41,12 @@ const ProfileSchema = new Schema({
     {
       title: {
         type: String,
-      required: true
+        required: true
       },
 
       company: {
         type: String,
-      required: true
+        required: true
       },
 
       location: {
@@ -60,7 +60,7 @@ const ProfileSchema = new Schema({
 
       to: {
         type: Date,
-        required: true,
+        required: false,
       },
 
       current: {
@@ -77,12 +77,12 @@ const ProfileSchema = new Schema({
     {
       school: {
         type: String,
-      required: true
+        required: true
       },
 
       degree: {
         type: String,
-      required: true
+        required: true
       },
 
       fieldofstudy: {
@@ -131,7 +131,7 @@ const ProfileSchema = new Schema({
     type: Date,
     default: Date.now
   }
-})
+});
 
 const Profile = mongoose.model('profile', ProfileSchema);
 export default Profile;

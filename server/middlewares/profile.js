@@ -8,7 +8,7 @@ const validProfile = (data) => {
   data.skills = !isEmpty(data.skills) ? data.skills : '';
 
   // Handle validations
-  if (!validator.isLength(data.handle, {min:2, max:40})) {
+  if (!validator.isLength(data.handle, { min: 2, max: 40 })) {
     errors.handle = 'Profile handle needs to be between 2 and 40 characters';
   }
 
@@ -28,37 +28,37 @@ const validProfile = (data) => {
 
   // URL validations
   if (!isEmpty(data.website)) {
-    if(!validator.isURL(data.website)) {
+    if (!validator.isURL(data.website)) {
       errors.website = 'Invalid URL'
     }
   }
 
   if (!isEmpty(data.youtube)) {
-    if(!validator.isURL(data.youtube)) {
+    if (!validator.isURL(data.youtube)) {
       errors.youtube = 'Invalid URL'
     }
   }
 
   if (!isEmpty(data.twitter)) {
-    if(!validator.isURL(data.twitter)) {
+    if (!validator.isURL(data.twitter)) {
       errors.twitter = 'Invalid URL'
     }
   }
 
   if (!isEmpty(data.facebook)) {
-    if(!validator.isURL(data.facebook)) {
+    if (!validator.isURL(data.facebook)) {
       errors.facebook = 'Invalid URL'
     }
   }
 
   if (!isEmpty(data.instagram)) {
-    if(!validator.isURL(data.instagram)) {
+    if (!validator.isURL(data.instagram)) {
       errors.instagram = 'Invalid URL'
     }
   }
 
   if (!isEmpty(data.linkedin)) {
-    if(!validator.isURL(data.linkedin)) {
+    if (!validator.isURL(data.linkedin)) {
       errors.linkedin = 'Invalid URL'
     }
   }

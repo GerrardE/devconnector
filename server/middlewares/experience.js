@@ -25,7 +25,7 @@ const validExperience = (data) => {
   return {
     errors,
     isValid: isEmpty(errors)
-  }
-}
+  };
+};
 
 export default validExperience;
