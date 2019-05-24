@@ -34,13 +34,13 @@ class CreateProfile extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
-      this.setState({ errors: nextProps.errors })
+      this.setState({ errors: nextProps.errors.errors })
     }
   }
 
   onSubmit(e) {
     e.preventDefault();
-
+    
     const profileData = {
       handle: this.state.handle,
       company: this.state.company,

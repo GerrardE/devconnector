@@ -248,7 +248,7 @@ class ProfileController {
     }
 
     Profile.findOne({ user: req.user.id })
-      .then(profile => {
+      .then((profile) => {
         const newExp = {
           title: req.body.title,
           company: req.body.company,
@@ -262,15 +262,14 @@ class ProfileController {
         // Add to Experience array
         profile.experience.unshift(newExp);
         profile.save()
-          .then(profile => {
-            return res.status(200)
-              .json({
-                success: true,
-                message: 'Experience added successfully',
-                profile
-              });
-          })
-          .catch(err => {
+          .then(() => res.status(200)
+            .json({
+              success: true,
+              message: 'Experience added successfully',
+              profile
+            }))
+          .catch((err) => {
+            console.log(err);
             errors.notSaved = 'This experience was not saved';
             return res.status(400)
               .json({
@@ -279,7 +278,7 @@ class ProfileController {
               });
           });
       })
-      .catch(err => {
+      .catch(() => {
         errors.noprofile = 'This profile does not exist';
         return res.status(404)
           .json({
@@ -306,7 +305,7 @@ class ProfileController {
     }
 
     Profile.findOne({ user: req.user.id })
-      .then(profile => {
+      .then((profile) => {
         const newEdu = {
           school: req.body.school,
           degree: req.body.degree,
@@ -320,7 +319,7 @@ class ProfileController {
         // Add to Top of Education array
         profile.education.unshift(newEdu);
         profile.save()
-          .then(profile => {
+          .then(() => {
             return res.status(200)
               .json({
                 success: true,
@@ -328,7 +327,7 @@ class ProfileController {
                 profile
               });
           })
-          .catch(err => {
+          .catch((err) => {
             errors.notSaved = 'This education was not saved';
             return res.status(400)
               .json({
@@ -337,7 +336,7 @@ class ProfileController {
               });
           });
       })
-      .catch(err => {
+      .catch((err) => {
         errors.noprofile = 'This profile does not exist';
         return res.status(404)
           .json({
